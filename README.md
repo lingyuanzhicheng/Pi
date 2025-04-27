@@ -13,5 +13,5 @@
 
 |名字|备注|Path|
 |---|---|---|
-|Overlay|Waveshare 1.3inch LCD HAT|[Path](Radxa ZERO 3W/Overlay/Waveshare 1.3inch LCD HAT)|
-|Pi Tool Python|一个基于Waveshare 1.3inch LCD HAT开发的设备小工具。|[Path](Radxa ZERO 3W/Pi Tool Python)|
+|Overlay|Waveshare 1.3inch LCD HAT|[Path](Radxa%20ZERO%203W/Overlay/Waveshare%201.3inch%20LCD%20HAT)|
+|Pi Tool Python|一个基于Waveshare 1.3inch LCD HAT开发的设备小工具。|[Path](Radxa%20ZERO%203W/Pi%20Tool%20Python)|
