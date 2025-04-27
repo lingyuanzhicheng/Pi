@@ -1,0 +1,5 @@
+{
+    "Reboot": "reboot",
+    "Poweroff": "poweroff",
+    "案例": "echo '命令已经执行'"
+}
