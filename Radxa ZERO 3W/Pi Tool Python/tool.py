@@ -123,16 +123,23 @@ def get_gateway():
 def get_wireless_info():
     try:
         output = subprocess.check_output(['iwconfig', 'wlan0'])
-        output = output.decode('utf-8')
+        output = output.decode('utf-8', errors='replace')  # 处理中文转义问题
         
         # 获取 ESSID
         essid_start = output.find('ESSID:"') + 7
         essid_end = output.find('"', essid_start)
         essid = output[essid_start:essid_end]
         
+        # 使用echo -e处理转义字符
+        try:
+            decoded_essid = subprocess.check_output(['echo', '-e', essid])
+            decoded_essid = decoded_essid.decode('utf-8').strip()
+        except:
+            decoded_essid = essid
+        
         # 尝试将ESSID从16进制转换为中文
-        if all(c in '0123456789abcdefABCDEF' for c in essid):
-            essid = hex_to_chinese(essid)
+        if all(c in '0123456789abcdefABCDEF' for c in decoded_essid):
+            decoded_essid = hex_to_chinese(decoded_essid)
         
         # 获取 Bit Rate
         bit_rate_start = output.find('Bit Rate=') + 9
@@ -149,11 +156,8 @@ def get_wireless_info():
         signal_level_end = output.find(' ', signal_level_start)
         signal_level = output[signal_level_start:signal_level_end] + ' dBm'
         
-        global current_wifi_name
-        current_wifi_name = essid
-        
         return {
-            'essid': essid,
+            'essid': decoded_essid,
             'bit_rate': bit_rate,
             'link_quality': link_quality,
             'signal_level': signal_level
@@ -460,15 +464,17 @@ def update_wifi_list_display():
         y = i * ROW_HEIGHT
         draw.line([(0, y), (WIDTH, y)], fill=(255, 105, 180), width=1)
 
-    # 获取当前连接的Wi-Fi名称
-    global current_wifi_name, selected_wifi_index, start_wifi_index, wifi_list_scanned
-    
+    # 获取当前连接的Wi-Fi名称，并解码
+    wireless_info = get_wireless_info()  # 获取无线网络信息
+    current_wifi_name = wireless_info['essid']  # 使用get_wireless_info()获取的ESSID，该函数内部已经处理了echo -e和解码逻辑
+
     # 第一行 - 当前连接的Wi-Fi
     text = f"Connected: {current_wifi_name}"
     y_center = ROW_HEIGHT // 2
     draw.text((WIDTH // 2 - font.getlength(text) // 2, y_center - font.size // 2), text, font=font, fill=(255, 255, 255))
 
     # 如果还没有扫描Wi-Fi列表，显示提示信息
+    global wifi_list, wifi_list_scanned, selected_wifi_index, start_wifi_index
     if not wifi_list_scanned:
         # 只显示一条提示信息
         for i in range(1, 8):

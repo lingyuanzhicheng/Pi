@@ -13,3 +13,22 @@
 
 摇杆的上下左右是控制上下左右选择的。
 KEY1是确认、KEY2是取消。KEY3是特殊按键（如密码输入页里的确认密码，进行连接）。
+
+### 环境配置
+
+请根据情况自行修改相关内容。如`/etc/systemd/system/PiToolPython.service`文件里的`ExecStart`与`WorkingDirectory`部分。
+
+```
+sudo apt-get install python3-pip
+pip3 config set global.index-url https://pypi.tuna.tsinghua.edu.cn/simple
+sudo pip3 install pillow
+sudo apt-get install python3-libgpiod
+sudo apt install net-tools
+sudo apt install wireless-tools
+sudo nano PiToolPython.service
+mv PiToolPython.service /etc/systemd/system/
+sudo chmod -R 777 /etc/systemd/system/PiToolPython.service
+sudo systemctl daemon-reload
+sudo systemctl enable PiToolPython.service
+sudo systemctl start PiToolPython.service
+```
